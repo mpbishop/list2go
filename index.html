@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+	<title> Checklists To Go </title>
+
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<style type="text/css">
+        .content{
+            margin-left:0px;
+        }
+        .container{
+            margin-left:0px;
+            text-align: left;
+        }
+    	.checkedClass {
+    	text-decoration: line-through;
+		}
+        .brand,
+        .navbar .navbar-brand,
+        .navbar-inverse .navbar-brand:hover,
+        .navbar-inverse .navbar-brand:focus {
+            color: #646475;
+            text-shadow: 1px 1px 0px #fff;
+            font-size: 2em;
+            /*For fake logo only, remove if change*/
+            font-family: 'Aguafina Script', sans-serif;
+            line-height: 1em;
+            margin-bottom: -1em;
+        }
+        .navbar {
+            position: relative;
+            z-index: 20;
+            -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+            background: #dddde2;
+            background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddde2), color-stop(1, #f9f9f9));
+            background: -ms-linear-gradient(bottom, #dddde2, #f9f9f9);
+            background: -moz-linear-gradient(center bottom, #dddde2 0%, #f9f9f9 100%);
+            background: -o-linear-gradient(bottom, #dddde2, #f9f9f9);
+            filter: progid:dximagetransform.microsoft.gradient(startColorStr='#dddde2', EndColorStr='#f9f9f9');
+            -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f9f9f9',EndColorStr='#dddde2')";
+            padding: 1.50em;
+            margin: 0px;
+            -webkit-border-radius: 0px;
+            -moz-border-radius: 0px;
+            border-radius: 0px;
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            border: 0px;
+            border-bottom: 1px solid #9898a7;
+        }
+ 	</style>
+ 
+
+    <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular.min.js">
+    </script>
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src='https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+
+</head>
+
+<body ng-controller="listController">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="icon-reorder"></span> </button>
+      <a class="navbar-brand" href="checklist.html">List 2 Go</a>
+    </div>
+</div>
+
+<div class="container">
+    <br>
+    <form class="form-inline" role="form" ng-submit="addList()">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="<checklist name>" ng-model="new_list" >
+        </div>  
+        <button type="submit" class="btn btn-primary" >Rename Checklist </button>  	
+    </form> 
+    <br>	
+     <form class="form-inline" role="form">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="<email address here>" ng-model="new_person" >
+        </div>  
+        <button type="submit" class="btn btn-success" >Send Checklist </button>
+    </form>	
+</div>
+
+<br>
+<div class="container">
+   <form class="form-inline" role="form" ng-submit="addItem()">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="<new item here>" ng-model="new_item">   
+             </div>
+            <button type="submit" class="btn btn-warning" >Add Item </button> 
+    </form>
+    
+	<div class="row">
+		<div class="col-lg-4">
+            <h2>{{ listtitle }} checklist </h2>	
+			<ul class="list-unstyled">
+				<li ng-repeat="item in list" 
+					ng-class="{'checkedClass': item.isChecked}">
+					<div class="checkbox">
+    					<label>
+      						<input type="checkbox" ng-model="item.isChecked"> 
+      						<span>
+      						{{ item.linetext }}
+      						</span>
+    					</label>
+  					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+	
+    <script type="text/javascript">
+    		function listController($scope){
+                // var dbNum = Math.uuid(6, 10); ???
+                dbNum = "";
+                var dbName = "https://wisemosaics" + dbNum + ".firebaseio.com/";
+                var listFirebaseDB = new Firebase(dbName);
+                $scope.listtitle = "";
+    			$scope.list = [];
+                // console.log("start controller. list has " + $scope.list.length ) ;
+    			$scope.new_item = "";
+    			$scope.addList = function(){
+    				/* this saves the list name for later use */
+    				$scope.listtitle = $scope.new_list ;
+    				$scope.new_list= "";
+    			};
+    			$scope.addItem = function(){
+    				/* this function is triggered when new item is submitted. 
+                    It appends the item to the list, unchecked by default */
+                // $scope.list.push({isChecked : false, linetext : $scope.new_item});
+                // console.log("addItem, before firebase push - list has " + $scope.list.length ) ;
+                    listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
+                //  console.log("addItem, after firebase push - list has " + $scope.list.length ) ;
+    				$scope.new_item = "";
+    			};
+                listFirebaseDB.on('child_added', function(snapshot) {
+                    /* whenever any other ruser adds an item to this list, 
+                    it gets added to local list array */
+                    var alienItem = snapshot.val();
+                //  console.log("child added, before list push - list has " + $scope.list.length ) ;
+                    $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                //  console.log("child added, after list push - list has " + $scope.list.length ) ;
+                });
+                listFirebaseDB.on('child_changed', function(snapshot) {
+                    /* whenever a user changes items on list, what? 
+                    var changedItem = snapshot.val();
+                    var index = $scope.list.indexOf(changedItem);
+                    if (index > -1) {
+                        /* found item that was changed? maybe update $scope.list with changedItem?
+                        $scope.list.push({isChecked : changedItem.isChecked, linetext : changedItem.linetext});
+                    }
+                    */
+                });
+    		}
+    </script>
+</body>
+</html>
