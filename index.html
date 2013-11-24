@@ -129,9 +129,13 @@
     		   $scope.new_item = "";
     		   $scope.addList = function(){
     				/* this saves the list name for later use */
+    			$scope.list = [];	
     			$scope.listtitle = $scope.new_list ;
                        var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
                        listFirebaseDB = new Firebase(dbName);
+                       listFirebaseDB.on('value', function(current_list) {
+                       	   console.log(current_list);
+                       });
                        listFirebaseDB.on('child_added', function(snapshot) {
                     /* whenever any other ruser adds an item to this list, 
                     it gets added to local list array */
