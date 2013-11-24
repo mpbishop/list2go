@@ -121,20 +121,20 @@
 	
     <script type="text/javascript">
     		function listController($scope){
-                // var dbNum = Math.uuid(6, 10); ???
-                dbNum = "";
-                var dbName = "https://list2go" + dbNum + ".firebaseio.com/";
-                var listFirebaseDB = new Firebase(dbName);
-                $scope.listtitle = "";
-    			$scope.list = [];
-                // console.log("start controller. list has " + $scope.list.length ) ;
-    			$scope.new_item = "";
-    			$scope.addList = function(){
+                    var dbName = "https://list2go.firebaseio.com/";
+                    var listFirebaseDB = new Firebase(dbName);
+                    $scope.listtitle = "";
+    		    $scope.list = [];
+                   // console.log("start controller. list has " + $scope.list.length ) ;
+    		   $scope.new_item = "";
+    		   $scope.addList = function(){
     				/* this saves the list name for later use */
-    				$scope.listtitle = $scope.new_list ;
-    				$scope.new_list= "";
-    			};
-    			$scope.addItem = function(){
+    			$scope.listtitle = $scope.new_list ;
+                       var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
+                       listFirebaseDB = new Firebase(dbName);
+    			$scope.new_list= "";
+    		};
+    		$scope.addItem = function(){
     				/* this function is triggered when new item is submitted. 
                     It appends the item to the list, unchecked by default */
                 // $scope.list.push({isChecked : false, linetext : $scope.new_item});
