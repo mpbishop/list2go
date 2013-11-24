@@ -132,6 +132,26 @@
     			$scope.listtitle = $scope.new_list ;
                        var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
                        listFirebaseDB = new Firebase(dbName);
+                       listFirebaseDB.on('child_added', function(snapshot) {
+                    /* whenever any other ruser adds an item to this list, 
+                    it gets added to local list array */
+                            var alienItem = snapshot.val();
+                //  console.log("child added, before list push - list has " + $scope.list.length ) ;
+                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                //  console.log("child added, after list push - list has " + $scope.list.length ) ;
+                       });
+                       listFirebaseDB.on('child_changed', function(snapshot) {
+                    /* whenever a user changes items on list, what? 
+                    var changedItem = snapshot.val();
+                    var index = $scope.list.indexOf(changedItem);
+                    if (index > -1) {
+                        /* found item that was changed? maybe update $scope.list with changedItem?
+                        $scope.list.push({isChecked : changedItem.isChecked, linetext : changedItem.linetext});
+                    }
+                    */
+                        });
+                
+                
     			$scope.new_list= "";
     		};
     		$scope.addItem = function(){
@@ -143,24 +163,7 @@
                 //  console.log("addItem, after firebase push - list has " + $scope.list.length ) ;
     				$scope.new_item = "";
     			};
-                listFirebaseDB.on('child_added', function(snapshot) {
-                    /* whenever any other ruser adds an item to this list, 
-                    it gets added to local list array */
-                    var alienItem = snapshot.val();
-                //  console.log("child added, before list push - list has " + $scope.list.length ) ;
-                    $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
-                //  console.log("child added, after list push - list has " + $scope.list.length ) ;
-                });
-                listFirebaseDB.on('child_changed', function(snapshot) {
-                    /* whenever a user changes items on list, what? 
-                    var changedItem = snapshot.val();
-                    var index = $scope.list.indexOf(changedItem);
-                    if (index > -1) {
-                        /* found item that was changed? maybe update $scope.list with changedItem?
-                        $scope.list.push({isChecked : changedItem.isChecked, linetext : changedItem.linetext});
-                    }
-                    */
-                });
+
     		}
     </script>
 </body>
