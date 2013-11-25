@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app>
 <head>
-	<title> Checklists To Go </title>
+	<title> list2go </title>
 
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
@@ -54,9 +54,7 @@
         }
  	</style>
  
-
-    <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular.min.js">
-    </script>
+    <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular.min.js"> </script>
     <script src="https://cdn.firebase.com/v0/firebase.js"></script>
     <script src='https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
@@ -79,7 +77,7 @@
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<checklist name>" ng-model="new_list" >
         </div>  
-        <button type="submit" class="btn btn-primary" >Rename Checklist </button>  	
+        <button type="submit" class="btn btn-primary" >Get or New Checklist </button>  	
     </form> 
     <br>	
      <form class="form-inline" role="form">
@@ -120,51 +118,44 @@
 </div>
 	
     <script type="text/javascript">
+
     		function listController($scope){
-                    var dbName = "https://list2go.firebaseio.com/";
-                    var listFirebaseDB = new Firebase(dbName);
-                    $scope.listtitle = "";
+                var dbName = "https://list2go.firebaseio.com/sample";
+                var listFirebaseDB = new Firebase(dbName);
+                $scope.listtitle = "sample";
     		    $scope.list = [];
-                   // console.log("start controller. list has " + $scope.list.length ) ;
-    		   $scope.new_item = "";
-    		   $scope.addList = function(){
-    				/* this saves the list name for later use */
-    			$scope.list = [];	
-    			$scope.listtitle = $scope.new_list ;
-                       var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
-                       listFirebaseDB = new Firebase(dbName);
-                       listFirebaseDB.on('value', function(current_list) {
+                $scope.new_item = "";
+                listFirebaseDB.on('child_added', function(snapshot) {
+                    /* whenever any other user adds an item to this list, it gets added to local list array */
+                            var alienItem = snapshot.val();
+                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                    });
+
+    		    $scope.addList = function(){
+    				/* saves list name, initializes local scope */
+                    $scope.list = [];	
+                    $scope.listtitle = $scope.new_list ;
+                    var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
+                    listFirebaseDB = new Firebase(dbName);
+                    listFirebaseDB.on('value', function(current_list) {
                        	   console.log(current_list);
                        });
-                       listFirebaseDB.on('child_added', function(snapshot) {
-                    /* whenever any other ruser adds an item to this list, 
-                    it gets added to local list array */
+                    listFirebaseDB.on('child_added', function(snapshot) {
+                    /* whenever any other user adds an item to this list, it gets added to local list array */
                             var alienItem = snapshot.val();
-                //  console.log("child added, before list push - list has " + $scope.list.length ) ;
                             $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
-                //  console.log("child added, after list push - list has " + $scope.list.length ) ;
-                       });
-                       listFirebaseDB.on('child_changed', function(snapshot) {
-                    /* whenever a user changes items on list, what? 
-                    var changedItem = snapshot.val();
-                    var index = $scope.list.indexOf(changedItem);
-                    if (index > -1) {
-                        /* found item that was changed? maybe update $scope.list with changedItem?
-                        $scope.list.push({isChecked : changedItem.isChecked, linetext : changedItem.linetext});
+                    });
+                    $scope.new_list= "";
+                };
+                $scope.copyList = function(original, copy){
+                    for (var i=0; i < original.length ; i++) {
+                        copy[i] = original[i];
                     }
-                    */
-                        });
-                
-                
-    			$scope.new_list= "";
-    		};
-    		$scope.addItem = function(){
+                };
+                $scope.addItem = function(){
     				/* this function is triggered when new item is submitted. 
                     It appends the item to the list, unchecked by default */
-                // $scope.list.push({isChecked : false, linetext : $scope.new_item});
-                // console.log("addItem, before firebase push - list has " + $scope.list.length ) ;
                     listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
-                //  console.log("addItem, after firebase push - list has " + $scope.list.length ) ;
     				$scope.new_item = "";
     			};
 
