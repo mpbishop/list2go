@@ -73,6 +73,9 @@
 
 <div class="container">
     <br>
+    <button type="submit" class="btn btn-primary" ng-click="seeSample()" >See Sample </button>  
+    <br>
+    <br>
     <form class="form-inline" role="form" ng-submit="addList()">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<checklist name>" ng-model="new_list" >
@@ -80,16 +83,13 @@
         <button type="submit" class="btn btn-primary" >Get or New Checklist </button>  	
     </form> 
     <br>	
-     <form class="form-inline" role="form">
+     <form class="form-inline" role="form" ng-submit="sendList()">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<email address here>" ng-model="new_person" >
         </div>  
         <button type="submit" class="btn btn-success" >Send Checklist </button>
     </form>	
-</div>
-
-<br>
-<div class="container">
+    <br>
    <form class="form-inline" role="form" ng-submit="addItem()">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<new item here>" ng-model="new_item">   
@@ -120,16 +120,24 @@
     <script type="text/javascript">
 
     		function listController($scope){
-                var dbName = "https://list2go.firebaseio.com/sample";
-                var listFirebaseDB = new Firebase(dbName);
-                $scope.listtitle = "sample";
+ 
+                $scope.listtitle = "";
+                $scope.new_list = "" ;
     		    $scope.list = [];
                 $scope.new_item = "";
-                listFirebaseDB.on('child_added', function(snapshot) {
+
+                $scope.seeSample = function(){
+                    $scope.list = []; 
+                    $scope.listtitle = "sample" ;  
+                    var dbName = "https://list2go.firebaseio.com/sample";
+                    listFirebaseDB = new Firebase(dbName);
+                    listFirebaseDB.on('child_added', function(snapshot) {
                     /* whenever any other user adds an item to this list, it gets added to local list array */
                             var alienItem = snapshot.val();
                             $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                            console.log("child added, seeSample listener");
                     });
+                };
 
     		    $scope.addList = function(){
     				/* saves list name, initializes local scope */
@@ -137,27 +145,25 @@
                     $scope.listtitle = $scope.new_list ;
                     var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
                     listFirebaseDB = new Firebase(dbName);
-                    listFirebaseDB.on('value', function(current_list) {
-                       	   console.log(current_list);
-                       });
-                    listFirebaseDB.on('child_added', function(snapshot) {
                     /* whenever any other user adds an item to this list, it gets added to local list array */
+                    listFirebaseDB.on('child_added', function(snapshot) {
                             var alienItem = snapshot.val();
                             $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                            console.log("child added, addList listener");
                     });
                     $scope.new_list= "";
                 };
-                $scope.copyList = function(original, copy){
-                    for (var i=0; i < original.length ; i++) {
-                        copy[i] = original[i];
-                    }
-                };
+
                 $scope.addItem = function(){
-    				/* this function is triggered when new item is submitted. 
+    				/* this function is triggered when a new item is submitted. 
                     It appends the item to the list, unchecked by default */
                     listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
     				$scope.new_item = "";
+                    console.log("item added in ", $scope.listtitle);
     			};
+
+                $scope.sendList = function(){
+                };
 
     		}
     </script>

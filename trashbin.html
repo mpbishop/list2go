@@ -1,6 +1,40 @@
 Javascript
 
 console.log("child added, before list push - list has " + $scope.list.length ) ;
+console.log("child added, after list push - list has " + $scope.list.length ) ;
+console.log("start controller. list has " + $scope.list.length ) ;
+
+	listFirebaseDB.on('child_added', function(snapshot) {
+    	var alienItem = snapshot.val();
+    	$scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+     	console.log("child adde in main listcontroller");
+    });
+               
+
+			$scope.addItem = function(){
+    				/* this function is triggered when new item is submitted. 
+                    It appends the item to the list, unchecked by default */
+                // $scope.list.push({isChecked : false, linetext : $scope.new_item});
+                // console.log("addItem, before firebase push - list has " + $scope.list.length ) ;
+                    listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
+                //  console.log("addItem, after firebase push - list has " + $scope.list.length ) ;
+    				$scope.new_item = "";
+    			};
 
 
-HTML
+            listFirebaseDB.on('child_changed', function(snapshot) {
+                    /* whenever a user changes items on list, what? 
+                    var changedItem = snapshot.val();
+                    var index = $scope.list.indexOf(changedItem);
+                    if (index > -1) {
+                        /* found item that was changed? maybe update $scope.list with changedItem?
+                        $scope.list.push({isChecked : changedItem.isChecked, linetext : changedItem.linetext});
+                    }
+                    */
+
+                $scope.copyList = function(original, copy){
+                    for (var i=0; i < original.length ; i++) {
+                        copy[i] = original[i];
+                    }
+                };
+
