@@ -1,3 +1,10 @@
+html
+
+bootstrap example with x to close alert or modal (close icon)
+<button type="button" class="close" aria-hidden="true">&times;</button>
+not sure what aria-hidden does?
+
+
 Javascript
 
 console.log("child added, before list push - list has " + $scope.list.length ) ;
@@ -36,5 +43,20 @@ console.log("start controller. list has " + $scope.list.length ) ;
                     for (var i=0; i < original.length ; i++) {
                         copy[i] = original[i];
                     }
+                };
+
+
+           		$scope.deleteItem = function(tobeDeleted, position){
+                    var itemRef = tobeDeleted.fireName;
+                    console.log("x pressed for", tobeDeleted.linetext);
+                    console.log("Item to be deleted = ");
+                    console.log("https://list2go.firebaseio.com/"+$scope.listtitle+"/"+itemRef);
+                    singleFirebaseitem = new Firebase("https://list2go.firebaseio.com/"+$scope.listtitle+"/"+itemRef);
+                    singleFirebaseitem.remove();
+                    console.log("position in local array is ", position);
+                    $scope.list.splice(position, 1);
+
+        //            console.log("need to delete ", itemRef);
+        //          itemRef.remove();
                 };
 

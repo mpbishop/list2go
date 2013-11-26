@@ -72,6 +72,7 @@
 </div>
 
 <div class="container">
+
     <br>
     <button type="submit" class="btn btn-primary" ng-click="seeSample()" >See Sample </button>  
     <br>
@@ -98,8 +99,8 @@
     </form>
     
 	<div class="row">
-		<div class="col-lg-4">
-            <h2>{{ listtitle }} checklist </h2>	
+		<div class="col-sm-4">
+            <h3>{{ listtitle }} checklist </h2>	
 			<ul class="list-unstyled">
 				<li ng-repeat="item in list" 
 					ng-class="{'checkedClass': item.isChecked}">
@@ -108,6 +109,8 @@
       						<input type="checkbox" ng-model="item.isChecked"> 
       						<span>
       						{{ item.linetext }}
+                            <button type="button" class="close" aria-hidden="true" 
+                            ng-click="deleteItem(item, list.indexOf(item))">&times;</button>
       						</span>
     					</label>
   					</div>
@@ -134,7 +137,8 @@
                     listFirebaseDB.on('child_added', function(snapshot) {
                     /* whenever any other user adds an item to this list, it gets added to local list array */
                             var alienItem = snapshot.val();
-                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext,
+                                fireName : snapshot.name()});
                             console.log("child added, seeSample listener");
                     });
                 };
@@ -148,8 +152,9 @@
                     /* whenever any other user adds an item to this list, it gets added to local list array */
                     listFirebaseDB.on('child_added', function(snapshot) {
                             var alienItem = snapshot.val();
-                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext});
+                            $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext, fireName : snapshot.name()});
                             console.log("child added, addList listener");
+                            console.log("snapshot name is", snapshot.name());
                     });
                     $scope.new_list= "";
                 };
@@ -161,6 +166,13 @@
     				$scope.new_item = "";
                     console.log("item added in ", $scope.listtitle);
     			};
+
+                $scope.deleteItem = function(tobeDeleted, position){
+                    var itemRef = tobeDeleted.fireName;
+                    singleFirebaseitem = new Firebase("https://list2go.firebaseio.com/"+$scope.listtitle+"/"+itemRef);
+                    singleFirebaseitem.remove();
+                    $scope.list.splice(position, 1);
+                };
 
                 $scope.sendList = function(){
                 };
