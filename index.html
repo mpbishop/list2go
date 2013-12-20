@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html ng-app>
+<html lang="en" ng-app>
 <head>
 	<title> list2go </title>
 
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="list2go.css">
+  <link rel="stylesheet" type="text/css" href="list2go.css">
 
-    <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular.min.js"> </script>
-    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
-    <script src='https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js'></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular.min.js"> </script>
+  <script type="text/javascript" src="http://code.angularjs.org/1.2.0-rc.3/angular-route.js"> </script>
+  <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+  <script src='https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js'></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
 
 </head>
 
@@ -25,8 +26,8 @@
 </div>
 
 <div class="container">
-
-    <br>
+  
+<br>
     <button type="submit" class="btn btn-primary" ng-click="seeSample()" >See Sample </button>  
     <br>
     <br>
@@ -34,15 +35,15 @@
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<checklist name>" ng-model="new_list" >
         </div>  
-        <button type="submit" class="btn btn-primary" >Get or New Checklist </button>  	
+        <button type="submit" class="btn btn-primary" >Get or New Checklist </button>   
     </form> 
-    <br>	
+    <br>  
      <form class="form-inline" role="form" ng-submit="sendList()">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<email address here>" ng-model="new_person" >
         </div>  
         <button type="submit" class="btn btn-success" >Send Checklist </button>
-    </form>	
+    </form> 
     <br>
    <form class="form-inline" role="form" ng-submit="addItem()">
         <div class="form-group">
@@ -51,47 +52,47 @@
             <button type="submit" class="btn btn-warning" >Add Item </button> 
     </form>
     
-	<div class="row">
-		<div class="col-sm-4">
-            <h3>{{ listtitle }} checklist </h2>	
-			<ul class="list-unstyled">
-				<li ng-repeat="item in list" 
-					ng-class="{'checkedClass': item.isChecked}">
-					<div class="checkbox">
-    					<label>
-      						<input type="checkbox" ng-model="item.isChecked" ng-change="checkItem(item)"> 
-      						<span>
-      						    {{ item.linetext }}
+  <div class="row">
+    <div class="col-sm-4">
+            <h3>{{ listtitle }} checklist </h2> 
+      <ul class="list-unstyled">
+        <li ng-repeat="item in list" 
+          ng-class="{'checkedClass': item.isChecked}">
+          <div class="checkbox">
+              <label>
+                  <input type="checkbox" ng-model="item.isChecked" ng-change="checkItem(item)"> 
+                  <span>
+                      {{ item.linetext }}
                                 <button type="button" class="close" aria-hidden="true" 
                                 ng-click="deleteItem(item, list.indexOf(item))">&times;</button>
-      						</span>
-    					</label>
-  					</div>
-				</li>
-			</ul>
-            <p class="half-line">&nbsp;</p> 
-            <h5> number of items = {{ list.length }} </h5>
-		</div>
-	</div>
+                  </span>
+              </label>
+            </div>
+        </li>
+      </ul>
+      <p class="half-line">&nbsp;</p> 
+      <h5> number of items = {{ list.length }} </h5>
+    </div>
+  </div>
 </div>
-	
-    <script type="text/javascript">
+  
+<script type="text/javascript">
 
-    		function listController($scope){
+function listController($scope){
  
-                $scope.listtitle = "";
-                $scope.new_list = "" ;
-    		    $scope.list = [];
-                $scope.new_item = "";
+            $scope.listtitle = "";
+            $scope.new_list = "" ;
+            $scope.list = [];
+            $scope.new_item = "";
 
-                $scope.seeSample = function(){
+            $scope.seeSample = function(){
                     $scope.new_list = "sample";
                     $scope.addList();
-                };
+            };
 
-    		    $scope.addList = function(){
-    				/* saves list name, initializes local scope */
-                    $scope.list = [];	
+            $scope.addList = function(){
+            /* saves list name, initializes local scope */
+                    $scope.list = []; 
                     $scope.listtitle = $scope.new_list ;
                     var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
                     listFirebaseDB = new Firebase(dbName);
@@ -112,12 +113,12 @@
                 };
 
                 $scope.addItem = function(){
-    				/* this function is triggered when a new item is submitted. 
+            /* this function is triggered when a new item is submitted. 
                     It appends the item to the list, unchecked by default */
                     listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
-    				$scope.new_item = "";
+                    $scope.new_item = "";
                     console.log("item added in ", $scope.listtitle);
-    			};
+                };
 
                 $scope.deleteItem = function(tobeDeleted, position){
                     var itemRef = tobeDeleted.fireName;
@@ -136,7 +137,8 @@
                 $scope.sendList = function(){
                 };
 
-    		}
+        }
     </script>
+
 </body>
 </html>

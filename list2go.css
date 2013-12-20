@@ -17,7 +17,7 @@
         .navbar-inverse .navbar-brand:focus {
             color: #646475;
             text-shadow: 1px 1px 0px #fff;
-            font-size: 2em;
+         /* font-size: 2em; */
             /*For fake logo only, remove if change*/
             font-family: 'Aguafina Script', sans-serif;
             line-height: 1em;
@@ -36,7 +36,7 @@
             background: -o-linear-gradient(bottom, #dddde2, #f9f9f9);
             filter: progid:dximagetransform.microsoft.gradient(startColorStr='#dddde2', EndColorStr='#f9f9f9');
             -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f9f9f9',EndColorStr='#dddde2')";
-            padding: 1.50em;
+            /* padding: 1.50em; */
             margin: 0px;
             -webkit-border-radius: 0px;
             -moz-border-radius: 0px;
