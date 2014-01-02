@@ -28,10 +28,12 @@
         <div class="form-group">
             <input type="text" class="form-control" placeholder="<checklist name>" ng-model="new_list" >
         </div>  
-        <button type="submit" class="btn btn-primary" >Get/New Checklist </button> 
-        <button type="submit" class="btn btn-success" ng-click="sendList()" >Share </button> 
+        <button type="submit" class="btn btn-primary" >Get/New Checklist </button>     
     </form>
-    <p class="half-line">&nbsp;</p>       
+    <div class="container">  
+    <button type="submit" class="btn btn-success" ng-click="sendList()" >Share </button>   
+    <p class="half-line">&nbsp;</p>
+    </div>     
 </div>
 
 <div class="container"> 
@@ -82,6 +84,7 @@
       $scope.list = []; 
       $scope.listtitle = $scope.new_list ;
       var dbName = "https://list2go.firebaseio.com/"+$scope.listtitle;
+      console.log("addlist, new list is ", $scope.new_list);
       listFirebaseDB = new Firebase(dbName);
       /* whenever any other user adds an item to this list, it gets added to local list array */
       listFirebaseDB.on('child_added', function(snapshot) {
@@ -90,21 +93,24 @@
         console.log("child added, addList listener");
         console.log("snapshot name is", snapshot.name());
       });
+/*
       listFirebaseDB.on('child_changed', function(snapshot) {
         var alienItem = snapshot.val();
         // NEXT  ???
         // put code in here to change list item from db
         console.log("child changed is ", snapshot.name());
       });
+*/
       $scope.new_list= "";
     };
 
     $scope.addItem = function(){
         /* this function is triggered when a new item is submitted. 
         It appends the item to the list, unchecked by default */
+        console.log("addItem for list =", $scope.listtitle);
+        console.log("item is", $scope.new_item);
         listFirebaseDB.push({isChecked: false, linetext : $scope.new_item});
         $scope.new_item = "";
-        console.log("item added in ", $scope.listtitle);
     };
 
     $scope.deleteItem = function(tobeDeleted, position){
@@ -123,6 +129,7 @@
 
     $scope.sendList = function(){
         var clipText = "";
+        console.log("start of sendList, listtitle is", $scope.listtitle);
         if ($scope.listtitle === "") {
           clipText = "http://salty-beyond-3185.herokuapp.com/index.html";
         }
@@ -130,9 +137,11 @@
           clipText = "http://salty-beyond-3185.herokuapp.com/index.html?list=" + $scope.listtitle ;
         };
         window.prompt("Copy to clipboard: Ctrl+C, Enter", clipText);
+        $scope.new_list = $scope.listtitle;
     };
 
     $scope.listtitle = "";
+    console.log("listtitle just blanked out");
     $scope.list = [];
     $scope.new_item = "";
 
@@ -146,6 +155,7 @@
       $scope.new_list = "sample";
       $scope.addList();
     };
+
   }
 
 </script>
