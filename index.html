@@ -90,8 +90,9 @@
       listFirebaseDB.on('child_added', function(snapshot) {
         var alienItem = snapshot.val();
         $scope.list.push({isChecked : alienItem.isChecked, linetext : alienItem.linetext, fireName : snapshot.name()});
-        console.log("child added, addList listener");
-        console.log("snapshot name is", snapshot.name());
+        $scope.$apply(function () {
+          console.log("child added via addList listener = ", alienItem.linetext);
+        });
       });
 /*
       listFirebaseDB.on('child_changed', function(snapshot) {
