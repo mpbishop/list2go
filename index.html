@@ -135,7 +135,7 @@
           clipText = "http://salty-beyond-3185.herokuapp.com/index.html";
         }
         else {
-          clipText = "http://salty-beyond-3185.herokuapp.com/index.html?list=" + $scope.listtitle ;
+          clipText = "http://salty-beyond-3185.herokuapp.com/index.html?list='" + $scope.listtitle + "'";
         };
         window.prompt("Copy to clipboard: Ctrl+C, Enter", clipText);
         $scope.new_list = $scope.listtitle;
